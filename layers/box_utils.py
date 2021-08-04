@@ -192,6 +192,7 @@ def nms(boxes, scores, overlap=0.5, top_k=200):
     x2 = boxes[:, 2]
     y2 = boxes[:, 3]
     area = torch.mul(x2 - x1, y2 - y1)
+
     v, idx = scores.sort(0)  # sort in ascending order
     # I = I[v >= 0.01]
     idx = idx[-top_k:]  # indices of the top-k largest vals
@@ -213,10 +214,23 @@ def nms(boxes, scores, overlap=0.5, top_k=200):
             break
         idx = idx[:-1]  # remove kept element from view
         # load bboxes of next highest vals
+
+        idx = torch.autograd.Variable(idx, requires_grad=False)
+        idx = idx.data
+        x1 = torch.autograd.Variable(x1, requires_grad=False)
+        x1 = x1.data
+        y1 = torch.autograd.Variable(y1, requires_grad=False)
+        y1 = y1.data
+        x2 = torch.autograd.Variable(x2, requires_grad=False)
+        x2 = x2.data
+        y2 = torch.autograd.Variable(y2, requires_grad=False)
+        y2 = y2.data
+
         torch.index_select(x1, 0, idx, out=xx1)
         torch.index_select(y1, 0, idx, out=yy1)
         torch.index_select(x2, 0, idx, out=xx2)
         torch.index_select(y2, 0, idx, out=yy2)
+
         # store element-wise max with next highest score
         xx1 = torch.clamp(xx1, min=x1[i])
         yy1 = torch.clamp(yy1, min=y1[i])
@@ -229,11 +243,17 @@ def nms(boxes, scores, overlap=0.5, top_k=200):
         # check sizes of xx1 and xx2.. after each iteration
         w = torch.clamp(w, min=0.0)
         h = torch.clamp(h, min=0.0)
-        inter = w*h
+        inter = w * h
+
+        area = torch.autograd.Variable(area, requires_grad=False)
+        area = area.data
+        idx = torch.autograd.Variable(idx, requires_grad=False)
+        idx = idx.data
+
         # IoU = i / (area(a) + area(b) - i)
         rem_areas = torch.index_select(area, 0, idx)  # load remaining areas)
         union = (rem_areas - inter) + area[i]
-        IoU = inter/union  # store result in iou
+        IoU = inter / union  # store result in iou
         # keep only elements with an IoU <= overlap
         idx = idx[IoU.le(overlap)]
     return keep, count

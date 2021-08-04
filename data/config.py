@@ -2,7 +2,7 @@
 import os.path
 
 # gets home dir cross platform
-HOME = os.path.expanduser("~")
+HOME = os.path.expanduser("")
 
 # for making bounding boxes pretty
 COLORS = ((255, 0, 0, 128), (0, 255, 0, 128), (0, 0, 255, 128),
@@ -27,7 +27,7 @@ voc = {
 }
 
 coco = {
-    'num_classes': 201,
+    'num_classes': 21,
     'lr_steps': (280000, 360000, 400000),
     'max_iter': 400000,
     'feature_maps': [38, 19, 10, 5, 3, 1],

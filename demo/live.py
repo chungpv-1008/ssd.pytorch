@@ -7,7 +7,7 @@ from imutils.video import FPS, WebcamVideoStream
 import argparse
 
 parser = argparse.ArgumentParser(description='Single Shot MultiBox Detection')
-parser.add_argument('--weights', default='weights/ssd_300_VOC0712.pth',
+parser.add_argument('--weights', default='weights/VOC.pth',
                     type=str, help='Trained state_dict file path')
 parser.add_argument('--cuda', default=False, type=bool,
                     help='Use cuda in live demo')
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     from ssd import build_ssd
 
     net = build_ssd('test', 300, 21)    # initialize SSD
-    net.load_state_dict(torch.load(args.weights))
+    net.load_state_dict(torch.load(args.weights, map_location=torch.device('cpu')))
     transform = BaseTransform(net.size, (104/256.0, 117/256.0, 123/256.0))
 
     fps = FPS().start()

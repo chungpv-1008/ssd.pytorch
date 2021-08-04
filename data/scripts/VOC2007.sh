@@ -7,9 +7,11 @@ start=`date +%s`
 if [ -z "$1" ]
   then
     # navigate to ~/data
-    echo "navigating to ~/data/ ..." 
-    mkdir -p ~/data
-    cd ~/data/
+    echo "navigating to data/ ..." 
+    # mkdir -p ~/data
+    cd data/
+    # mkdir -p ./VOCdevkit
+    # cd ./VOCdevkit
   else
     # check if is valid directory
     if [ ! -d $1 ]; then
@@ -22,9 +24,9 @@ fi
 
 echo "Downloading VOC2007 trainval ..."
 # Download the data.
-curl -LO http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar
+curl -LO http://pjreddie.com/media/files/VOCtrainval_06-Nov-2007.tar
 echo "Downloading VOC2007 test data ..."
-curl -LO http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtest_06-Nov-2007.tar
+curl -LO http://pjreddie.com/media/files/VOCtest_06-Nov-2007.tar
 echo "Done downloading."
 
 # Extract data
